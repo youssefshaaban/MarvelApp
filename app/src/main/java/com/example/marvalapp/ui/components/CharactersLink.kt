@@ -55,8 +55,7 @@ fun MenuItem(item: Url, onItemClick: (Url) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onItemClick(item) }
-            .padding(horizontal = 16.dp, vertical = 12.dp),
+            .clickable { onItemClick(item) }.padding(vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

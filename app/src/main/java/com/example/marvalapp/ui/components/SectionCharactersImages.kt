@@ -26,7 +26,7 @@ import com.example.marvalapp.R
 
 
 @Composable
-fun SectionCharacters(modifier: Modifier=Modifier,sectionTitle:String,characterDetail: CharacterDetail) {
+fun SectionCharactersImages(modifier: Modifier=Modifier, sectionTitle:String, characterDetail: CharacterDetail) {
     Column (modifier = modifier){
         Text(
             text = sectionTitle,

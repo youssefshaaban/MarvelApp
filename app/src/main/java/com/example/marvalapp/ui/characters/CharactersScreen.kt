@@ -96,7 +96,7 @@ fun CharacterItem(characters: Characters,onClick:(Int)->Unit) {
             contentScale = ContentScale.Crop
         )
         Text(
-            text = characters.name,
+            text = characters.name?:"",
             color = Color.Black,
             style = TextStyle(fontSize = 17.sp, fontWeight = FontWeight.Bold),
             modifier = Modifier

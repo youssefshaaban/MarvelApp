@@ -29,13 +29,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.domain.entity.character.Characters
 import com.example.marvalapp.ui.components.CharacterLinks
 import com.example.marvalapp.ui.components.Loading
-import com.example.marvalapp.ui.components.SectionCharacters
+import com.example.marvalapp.ui.components.SectionCharactersImages
+import com.example.marvalapp.ui.components.SectionDetails
 
 @Composable
 fun CharactersDetailScreen(charactersId: String, navHostController: NavHostController) {
@@ -48,9 +48,11 @@ fun CharactersDetailScreen(charactersId: String, navHostController: NavHostContr
 
     when (state.value) {
         is ViewState.Loading -> {
-            Loading(modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Gray))
+            Loading(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Gray)
+            )
         }
 
         is ViewState.Success -> {
@@ -107,59 +109,58 @@ fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit) {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            // Name
-            Text(
-                text = "NAME",
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-                color = Color.Red
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = character.name,
-                style = TextStyle(fontSize = 16.sp, fontWeight = FontWeight.Bold),
-                color = Color.White,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            // Description
-            Text(
-                text = "DESCRIPTION",
-                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold),
-                color = Color.Red
-            )
-            Spacer(modifier = Modifier.height(10.dp))
-            Text(
-                text = character.description,
-                style = TextStyle(fontSize = 16.sp),
-                color = Color.White,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
+
+            if (!character.name.isNullOrEmpty()) {
+                SectionDetails("NAME", character.name?:"")
+            }
+            if (!character.description.isNullOrBlank()) {
+                Spacer(modifier = Modifier.height(10.dp))
+                SectionDetails("DESCRIPTION", character.description ?: "")
+            }
         }
-        if (character.comics.items.isNotEmpty()){
+        if (character.comics.items.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
-            SectionCharacters(modifier = Modifier.fillMaxWidth()
-                .padding(16.dp), "COMICS", character.comics)
+            SectionCharactersImages(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp), "COMICS", character.comics
+            )
         }
 
-        if (character.series.items.isNotEmpty()){
+        if (character.series.items.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
-            SectionCharacters(modifier = Modifier.fillMaxWidth()
-                .padding(16.dp), "SERIES", character.series)
+            SectionCharactersImages(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp), "SERIES", character.series
+            )
         }
-        if (character.stories.items.isNotEmpty()){
+        if (character.stories.items.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
-            SectionCharacters(modifier = Modifier.fillMaxWidth()
-                .padding(16.dp), "Stories", character.stories)
+            SectionCharactersImages(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp), "Stories", character.stories
+            )
         }
-        if (character.events.items.isNotEmpty()){
+        if (character.events.items.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
-            SectionCharacters(modifier = Modifier.fillMaxWidth()
-                .padding(16.dp), "EVENT", character.events)
+            SectionCharactersImages(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp), "EVENT", character.events
+            )
         }
 
-        if (character.urls.isNotEmpty()){
+        if (character.urls.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
-            CharacterLinks(modifier = Modifier.fillMaxWidth().padding(16.dp),"RELATED LINKS", character.urls){}
+            CharacterLinks(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                "RELATED LINKS",
+                character.urls
+            ) {}
         }
 
     }
