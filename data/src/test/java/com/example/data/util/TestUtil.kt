@@ -11,7 +11,7 @@ object TestUtil {
     )
 
 
-    fun createMockCurrencyResponse(): Response<CharactersResponse> {
+    fun createMockGetCharactersResponse(): Response<CharactersResponse> {
         // Create a map of currencies for the mock response
 
 
