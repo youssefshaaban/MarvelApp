@@ -21,6 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -32,7 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.domain.entity.character.Characters
+import com.example.domain.entity.character.Item
 import com.example.marvalapp.ui.components.CharacterLinks
+import com.example.marvalapp.ui.components.FullScreenImagePopup
 import com.example.marvalapp.ui.components.Loading
 import com.example.marvalapp.ui.components.SectionCharactersImages
 import com.example.marvalapp.ui.components.SectionDetails
@@ -40,7 +46,7 @@ import com.example.marvalapp.ui.components.SectionDetails
 @Composable
 fun CharactersDetailScreen(charactersId: String, navHostController: NavHostController) {
     val viewModel: CharactersDetailViewModel = hiltViewModel()
-    Log.e("charactersId", charactersId)
+
     val state = viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
         viewModel.getCharacters(charactersId.toInt())
@@ -56,9 +62,15 @@ fun CharactersDetailScreen(charactersId: String, navHostController: NavHostContr
         }
 
         is ViewState.Success -> {
-            HandleSuccessContent((state.value as ViewState.Success).character) {
-                navHostController.popBackStack()
+            HandleSuccessContent((state.value as ViewState.Success).character,{navHostController.popBackStack()}) {
+                items,index->
+                viewModel.openModel(items)
             }
+            FullScreenImagePopup(
+                imageRes = viewModel.selectedItems, // Replace with the same resource
+                isVisible =viewModel.isPopupVisible.value ,
+                onDismiss = { viewModel.closeModel() } // Dismiss the popup
+            )
         }
 
         is ViewState.Error -> {
@@ -72,8 +84,7 @@ fun CharactersDetailScreen(charactersId: String, navHostController: NavHostContr
 }
 
 @Composable
-fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit) {
-
+fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit,onClickItem: (List<Item>,Int) -> Unit) {
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -124,7 +135,7 @@ fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp), "COMICS", character.comics
-            )
+            ,onClickItem)
         }
 
         if (character.series.items.isNotEmpty()) {
@@ -133,7 +144,7 @@ fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp), "SERIES", character.series
-            )
+            ,onClickItem)
         }
         if (character.stories.items.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
@@ -141,7 +152,7 @@ fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp), "Stories", character.stories
-            )
+            ,onClickItem)
         }
         if (character.events.items.isNotEmpty()) {
             Spacer(modifier = Modifier.height(10.dp))
@@ -149,7 +160,7 @@ fun HandleSuccessContent(character: Characters, onClickBack: () -> Unit) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp), "EVENT", character.events
-            )
+            ,onClickItem)
         }
 
         if (character.urls.isNotEmpty()) {

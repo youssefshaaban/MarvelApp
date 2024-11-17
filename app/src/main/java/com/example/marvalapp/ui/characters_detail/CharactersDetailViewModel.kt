@@ -1,9 +1,15 @@
 package com.example.marvalapp.ui.characters_detail
 
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.character.Characters
+import com.example.domain.entity.character.Item
 import com.example.domain.usecases.GetCharacterByIdUseCase
 import com.example.domain.util.Failure
 import com.example.domain.util.Resource
@@ -19,6 +25,8 @@ class CharactersDetailViewModel @Inject constructor(private val getCharacterById
     ViewModel() {
     private val _uiState = MutableStateFlow<ViewState>(ViewState.Idle)
     val uiState: StateFlow<ViewState> = _uiState
+    val isPopupVisible = mutableStateOf(false)
+    val selectedItems = mutableStateListOf<Item>()
     fun getCharacters(charactersId: Int) = viewModelScope.launch {
         _uiState.value = ViewState.Loading
         getCharacterByIdUseCase(charactersId).collectLatest { result ->
@@ -47,6 +55,15 @@ class CharactersDetailViewModel @Inject constructor(private val getCharacterById
 
     override fun onCleared() {
         super.onCleared()
+    }
+
+    fun closeModel() {
+        isPopupVisible.value=false
+    }
+    fun openModel(items:List<Item>){
+        selectedItems.clear()
+        selectedItems.addAll(items)
+        isPopupVisible.value=true
     }
 }
 

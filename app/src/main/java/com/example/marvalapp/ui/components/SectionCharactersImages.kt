@@ -1,5 +1,6 @@
 package com.example.marvalapp.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,11 +23,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.domain.entity.character.CharacterDetail
+import com.example.domain.entity.character.Item
 import com.example.marvalapp.R
 
 
 @Composable
-fun SectionCharactersImages(modifier: Modifier=Modifier, sectionTitle:String, characterDetail: CharacterDetail) {
+fun SectionCharactersImages(modifier: Modifier=Modifier, sectionTitle:String, characterDetail: CharacterDetail,onClickItem:(List<Item>,Int)->Unit) {
     Column (modifier = modifier){
         Text(
             text = sectionTitle,
@@ -38,7 +40,7 @@ fun SectionCharactersImages(modifier: Modifier=Modifier, sectionTitle:String, ch
             modifier = Modifier.padding(top = 8.dp)
         ) {
             items(characterDetail.items) { item ->
-                Column(modifier = Modifier.width(100.dp)) {
+                Column(modifier = Modifier.width(100.dp).clickable { onClickItem(characterDetail.items,0)}) {
                     AsyncImage(
                         model = "${item.resourceURI}/standard_medium.jpg",
                         contentDescription = "",
