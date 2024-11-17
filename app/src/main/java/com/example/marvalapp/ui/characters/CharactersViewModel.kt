@@ -1,6 +1,5 @@
 package com.example.marvalapp.ui.characters
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -12,7 +11,6 @@ import com.example.domain.entity.character.Characters
 import com.example.domain.usecases.GetAllCharactersUseCase
 import com.example.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +20,7 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
     val charactersList = mutableStateListOf<Characters>()
     private val limit = 20
     private var page by mutableIntStateOf(0)
-    private var _canPaginate by mutableStateOf(false)
-    val canPaginate = _canPaginate
+    var canPaginate by mutableStateOf(false)
     var listState by mutableStateOf(ListState.IDLE)
 
     init {
@@ -31,22 +28,25 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
     }
 
     fun getCharacters() = viewModelScope.launch {
-        if (page == 0 || page != 0 && _canPaginate) {
+        if (page == 0 || page != 0 && canPaginate) {
             listState = if (page == 0) ListState.LOADING else ListState.PAGINATING
             getAllCharactersUseCase(page, limit).collect { result ->
                 if (result is Resource.Success) {
-                    _canPaginate = result.data.results.size == limit
+                    canPaginate = result.data.results.size == limit
                     if (page == 0) {
                         charactersList.clear()
                         charactersList.addAll(result.data.results)
                     } else {
                         charactersList.addAll(result.data.results)
                     }
-                    if (_canPaginate)
+                    if (canPaginate){
                         page++
-                    listState=ListState.IDLE
+                        listState = ListState.IDLE
+                    }else{
+                        listState= ListState.PAGINATION_EXHAUST
+                    }
                 } else {
-                    listState = if (page == 0) ListState.ERROR else ListState.PAGINATION_EXHAUST
+                    listState = ListState.ERROR
                 }
             }
         }
@@ -55,7 +55,7 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
     override fun onCleared() {
         page = 0
         listState = ListState.IDLE
-        _canPaginate = false
+        canPaginate = false
         super.onCleared()
     }
 }
