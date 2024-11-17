@@ -51,7 +51,7 @@ fun CharactersScreen(onClickCharacters: (Int) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.Gray)
     ) {
         Row(
             modifier = Modifier
