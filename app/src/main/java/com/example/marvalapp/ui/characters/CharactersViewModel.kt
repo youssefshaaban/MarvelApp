@@ -1,5 +1,6 @@
 package com.example.marvalapp.ui.characters
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -22,18 +23,17 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
     private val limit = 20
     private var page by mutableIntStateOf(0)
     private var _canPaginate by mutableStateOf(false)
-    val canPaginate=_canPaginate
-    private var _listState by mutableStateOf(ListState.IDLE)
-    val listState=_listState
+    val canPaginate = _canPaginate
+    var listState by mutableStateOf(ListState.IDLE)
+
     init {
         getCharacters()
     }
 
     fun getCharacters() = viewModelScope.launch {
-        if (page == 0 || (page != 0 && _canPaginate) && _listState == ListState.IDLE) {
-            _listState = if (page == 0) ListState.LOADING else ListState.PAGINATING
-
-            getAllCharactersUseCase(page, limit).collectLatest { result ->
+        if (page == 0 || page != 0 && _canPaginate) {
+            listState = if (page == 0) ListState.LOADING else ListState.PAGINATING
+            getAllCharactersUseCase(page, limit).collect { result ->
                 if (result is Resource.Success) {
                     _canPaginate = result.data.results.size == limit
                     if (page == 0) {
@@ -44,15 +44,17 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
                     }
                     if (_canPaginate)
                         page++
+                    listState=ListState.IDLE
                 } else {
-                    _listState = if (page == 0) ListState.ERROR else ListState.PAGINATION_EXHAUST
+                    listState = if (page == 0) ListState.ERROR else ListState.PAGINATION_EXHAUST
                 }
             }
         }
     }
+
     override fun onCleared() {
         page = 0
-        _listState = ListState.IDLE
+        listState = ListState.IDLE
         _canPaginate = false
         super.onCleared()
     }

@@ -23,8 +23,13 @@ fun NavGraph(modifier: Modifier=Modifier,navController: NavHostController) {
 }
 
 fun addCharactersDetailScreen(navController: NavHostController, navGraphBuilder: NavGraphBuilder) {
-    navGraphBuilder.composable(route = NavRoute.CharacterDetail.path) {
-        CharactersDetailScreen(navController)
+    navGraphBuilder.composable(route = NavRoute.CharacterDetail.withArgsFormat(NavRoute.CharacterDetail.characterId)) {navBackStackEntry->
+        val charactersId = navBackStackEntry.arguments?.getString(NavRoute.CharacterDetail.characterId,"")
+        /* We check if it's not null */
+        charactersId?.let { id->
+            CharactersDetailScreen(id,navController)
+        }
+
     }
 }
 

@@ -101,12 +101,12 @@ fun CharactersResponse.toData(): com.example.domain.entity.character.Data {
                         )
                     }
                 ),
-                stories = com.example.domain.entity.character.Stories(
+                stories = com.example.domain.entity.character.CharacterDetail(
                     available = result.stories.available,
                     collectionURI = result.stories.collectionURI,
                     returned = result.stories.returned,
                     items = result.stories.items.map { storyItem ->
-                        com.example.domain.entity.character.StoryItem(
+                        com.example.domain.entity.character.Item(
                             name = storyItem.name,
                             resourceURI = storyItem.resourceURI,
                             type = storyItem.type

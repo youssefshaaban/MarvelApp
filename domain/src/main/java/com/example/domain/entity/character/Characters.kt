@@ -8,6 +8,6 @@ data class Characters (val comics: CharacterDetail,
                        val name: String,
                        val resourceURI: String,
                        val series: CharacterDetail,
-                       val stories: Stories,
+                       val stories: CharacterDetail,
                        val thumbnail: Thumbnail,
                        val urls: List<Url>)
