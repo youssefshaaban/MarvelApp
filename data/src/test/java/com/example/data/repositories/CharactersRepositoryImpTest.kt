@@ -5,6 +5,7 @@ import com.example.data.model.characters.toData
 import com.example.data.remote.CharactersAPI
 import com.example.data.util.TestUtil.createMockCurrencyResponse
 import com.example.data.util.TestUtil.defaultCharacterResponse
+import com.example.domain.entity.QueryCharacters
 import com.example.domain.util.Resource
 import io.mockk.clearAllMocks
 import io.mockk.coEvery
@@ -41,15 +42,15 @@ class CharactersRepositoryImpTest {
     @Test
     fun `getCharacters should return success when API call succeeds`() = runTest {
         // Mock API response
-//        val mockResponse=createMockCurrencyResponse()
-//        coEvery { charactersAPI.getAllCharacters() } returns mockResponse
-//
-//        // Collect and assert the result
-//        val result = charactersRepositoryImp.getCharacters().first()
-//        assert(result is Resource.Success)
-//        assertEquals(mockResponse.body()?.toData(), (result as Resource.Success).data)
-//
-//        coVerify { charactersAPI.getAllCharacters() }
+        val mockResponse=createMockCurrencyResponse()
+        coEvery { charactersAPI.getAllCharacters(any()) } returns mockResponse
+        val queryCharacters=QueryCharacters()
+        // Collect and assert the result
+        val result = charactersRepositoryImp.getCharacters(queryCharacters).first()
+        assert(result is Resource.Success)
+        assertEquals(mockResponse.body()?.toData(), (result as Resource.Success).data)
+
+        coVerify { charactersAPI.getAllCharacters(queryCharacters.toQueryMap()) }
     }
 
     @Test
