@@ -36,6 +36,13 @@ Retrofit, Coroutines, Flow, StateFlow, and etc.
         - Set up the di layer.
         - Set up UI layer, build and run the project.
         - Project Source Code and What Next?
+### When clone this repository:
+   - Need to get API key from [Marvel API](http://developer.marvel.com/)
+   - Add these key to `local.properties` file in Root project
+       ```
+       public_key=
+       private_key=
+       ```
 
 You can connect with me on:
 - [LinkedIn](https://www.linkedin.com/in/yousef-shaaban-09b478b7/)
