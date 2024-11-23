@@ -21,17 +21,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
@@ -49,7 +42,7 @@ fun CharactersDetailScreen(charactersId: String, navHostController: NavHostContr
 
     val state = viewModel.uiState.collectAsState()
     LaunchedEffect(Unit) {
-        viewModel.getCharacters(charactersId.toInt())
+       viewModel.handleIntent(CharactersDetailIntent.LoadCharactersDetail(charactersId.toInt()))
     }
 
     when (state.value) {
@@ -64,12 +57,12 @@ fun CharactersDetailScreen(charactersId: String, navHostController: NavHostContr
         is ViewState.Success -> {
             HandleSuccessContent((state.value as ViewState.Success).character,{navHostController.popBackStack()}) {
                 items,index->
-                viewModel.openModel(items)
+                viewModel.handleIntent(CharactersDetailIntent.OpenModel(items))
             }
             FullScreenImagePopup(
                 imageRes = viewModel.selectedItems, // Replace with the same resource
                 isVisible =viewModel.isPopupVisible.value ,
-                onDismiss = { viewModel.closeModel() } // Dismiss the popup
+                onDismiss = { viewModel.handleIntent(CharactersDetailIntent.CloseModel) } // Dismiss the popup
             )
         }
 

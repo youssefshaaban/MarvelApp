@@ -1,11 +1,8 @@
 package com.example.marvalapp.ui.characters_detail
 
 
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.domain.entity.character.Characters
@@ -27,7 +24,21 @@ class CharactersDetailViewModel @Inject constructor(private val getCharacterById
     val uiState: StateFlow<ViewState> = _uiState
     val isPopupVisible = mutableStateOf(false)
     val selectedItems = mutableStateListOf<Item>()
-    fun getCharacters(charactersId: Int) = viewModelScope.launch {
+
+    fun handleIntent(charactersDetailIntent: CharactersDetailIntent){
+        when(charactersDetailIntent){
+            is CharactersDetailIntent.LoadCharactersDetail->{
+                getCharacters(charactersId = charactersDetailIntent.charactersId)
+            }
+            is CharactersDetailIntent.CloseModel->{
+                    closeModel()
+            }
+            is CharactersDetailIntent.OpenModel->{
+                openModel(charactersDetailIntent.items)
+            }
+        }
+    }
+   private fun getCharacters(charactersId: Int) = viewModelScope.launch {
         _uiState.value = ViewState.Loading
         getCharacterByIdUseCase(charactersId).collectLatest { result ->
             when (result) {
@@ -57,14 +68,22 @@ class CharactersDetailViewModel @Inject constructor(private val getCharacterById
         super.onCleared()
     }
 
-    fun closeModel() {
+  private  fun closeModel() {
         isPopupVisible.value=false
     }
-    fun openModel(items:List<Item>){
+  private  fun openModel(items:List<Item>){
         selectedItems.clear()
         selectedItems.addAll(items)
         isPopupVisible.value=true
     }
+}
+
+
+
+sealed class CharactersDetailIntent{
+    data class LoadCharactersDetail(val charactersId:Int):CharactersDetailIntent()
+    data object CloseModel:CharactersDetailIntent()
+    data class OpenModel(val items:List<Item>):CharactersDetailIntent()
 }
 
 sealed class ViewState {

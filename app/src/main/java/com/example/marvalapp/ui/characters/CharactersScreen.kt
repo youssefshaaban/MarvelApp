@@ -36,18 +36,11 @@ fun CharactersScreen(onClickCharacters: (Int) -> Unit) {
     val viewModel = hiltViewModel<CharactersViewModel>()
     val lazyColumnListState = rememberLazyListState()
     val characters = viewModel.charactersList
-    val shouldStartPaginate = remember {
-        derivedStateOf {
-            viewModel.canPaginate && (lazyColumnListState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
-                ?: 0) >= (lazyColumnListState.layoutInfo.totalItemsCount - 2)
-        }
-    }
 
-    LaunchedEffect(key1 = shouldStartPaginate.value) {
-        if (shouldStartPaginate.value && viewModel.listState == ListState.IDLE)
-            viewModel.getCharacters()
-    }
 
+    LaunchedEffect(Unit) {
+        viewModel.handleIntent(CharactersIntent.LoadCharacters)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,7 +61,7 @@ fun CharactersScreen(onClickCharacters: (Int) -> Unit) {
 
         PaginatedLazyColumn(
             items = characters.toPersistentList(),  // Convert the list to a PersistentList
-            loadMoreItems = viewModel::getCharacters,
+            loadMoreItems = {viewModel.handleIntent(CharactersIntent.LoadMoreCharacters)},
             lazyColumnListState = lazyColumnListState,
             listState = viewModel.listState,
             modifier = Modifier.fillMaxSize()

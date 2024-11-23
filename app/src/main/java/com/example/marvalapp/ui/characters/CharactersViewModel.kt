@@ -23,9 +23,6 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
     var canPaginate by mutableStateOf(false)
     var listState by mutableStateOf(ListState.IDLE)
 
-    init {
-        getCharacters()
-    }
 
     fun getCharacters() = viewModelScope.launch {
         if (page == 0 || page != 0 && canPaginate) {
@@ -58,6 +55,20 @@ class CharactersViewModel @Inject constructor(private val getAllCharactersUseCas
         canPaginate = false
         super.onCleared()
     }
+
+    fun handleIntent(charecters: CharactersIntent) {
+        when(charecters){
+            is CharactersIntent.LoadMoreCharacters,
+                CharactersIntent.LoadCharacters->{
+                    getCharacters()
+                }
+        }
+    }
+}
+
+sealed class CharactersIntent{
+    data object LoadCharacters:CharactersIntent()
+    data object LoadMoreCharacters:CharactersIntent()
 }
 
 enum class ListState {

@@ -53,7 +53,7 @@ class CharactersDetailViewModelTest {
         coEvery { getCharacterByIdUseCase(1) } returns flowOf(resource)
 
         // Act
-        viewModel.getCharacters(1)
+        viewModel.handleIntent(CharactersDetailIntent.LoadCharactersDetail(1))
 
         // Assert
         assertEquals(ViewState.Success(mockCharacter), viewModel.uiState.value)
@@ -67,7 +67,7 @@ class CharactersDetailViewModelTest {
         coEvery { getCharacterByIdUseCase(1) } returns flowOf(error)
 
         // Act
-        viewModel.getCharacters(1)
+        viewModel.handleIntent(CharactersDetailIntent.LoadCharactersDetail(1))
 
         // Assert
         assertEquals(ViewState.Error("Some thing wrong happen"), viewModel.uiState.value)
@@ -81,7 +81,7 @@ class CharactersDetailViewModelTest {
         coEvery { getCharacterByIdUseCase(1) } returns flowOf(error)
 
         // Act
-        viewModel.getCharacters(1)
+        viewModel.handleIntent(CharactersDetailIntent.LoadCharactersDetail(1))
 
         // Assert
         assertEquals(ViewState.Error("Un expected error "), viewModel.uiState.value)
@@ -92,8 +92,8 @@ class CharactersDetailViewModelTest {
         // Arrange
         val items = TestUtil.defaultCharacterResponse.results.first().comics.items
 
-        // Act
-        viewModel.openModel(items)
+
+        viewModel.handleIntent(CharactersDetailIntent.OpenModel(items))
 
         // Assert
         assertTrue(viewModel.isPopupVisible.value)
@@ -104,10 +104,10 @@ class CharactersDetailViewModelTest {
     fun `closeModel sets popup invisible and clears items`() = runTest {
         // Arrange
         val items = TestUtil.defaultCharacterResponse.results.first().comics.items
-        viewModel.openModel(items)
+        viewModel.handleIntent(CharactersDetailIntent.OpenModel(items))
 
         // Act
-        viewModel.closeModel()
+        viewModel.handleIntent(CharactersDetailIntent.CloseModel)
 
         // Assert
         assertFalse(viewModel.isPopupVisible.value)
