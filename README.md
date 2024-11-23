@@ -6,9 +6,6 @@ Retrofit, Coroutines, Flow, StateFlow, and etc.
   <img src="https://github.com/youssefshaaban/MarvelApp/blob/main/design-architecture.jpg">
 </p>
 <br>
-
-## High-quality content to learn Android concepts.
-
 ### Major Highlights
 
 - MVI Architecture
@@ -29,10 +26,9 @@ Retrofit, Coroutines, Flow, StateFlow, and etc.
 
 ### Resources to learn MVVM Architecture and other components used in this project:
 
-- MVVM
-  Architecture: [MVVM Architecture - Android Tutorial](https://outcomeschool.com/blog/mvvm-architecture-android)
+- MVI
     - We will cover the following in this tutorial:
-        - What is MVVM architecture?
+        - What is MVI architecture?
         - Set up a new project with Kotlin and other dependencies required.
         - Project Structure.
         - Set up the utils package.
