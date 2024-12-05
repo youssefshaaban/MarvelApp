@@ -24,7 +24,7 @@ Retrofit, Coroutines, Flow, StateFlow, and etc.
 - **ui**: View classes along with their corresponding ViewModel.
 - **utils**: Utility classes.
 
-### Resources to learn MVVM Architecture and other components used in this project:
+### Resources to learn MVI Architecture and other components used in this project:
 
 - MVI
     - We will cover the following in this tutorial:
